@@ -1,22 +1,26 @@
+
 # EXP-4-Home-Automation-System-with-IOT
 
-# Aim:
-	To make a Lamp at home (230 V AC) On / Off using ESP8266, IFTT Google Assistance and Blynk IoT mobile application. 
-# Hardware / Software Tools required :
-PC with Internet connection
-Micro USB cable
-Wifi connection for ESP8266 (Use any mobile hotspot or Router)
-ESP8266 Board
-Mobile Phone with Blynk App installed
-IFTT for Google Voice Assistance
-9 W Bulb and Relay control
-Arduino software 
-Jumper Wires
+## Aim:
+To make a Lamp at home (230 V AC) On / Off using ESP8266, IFTT Google Assistance and Blynk IoT mobile application. 
+	
+## Hardware / Software Tools required :
+- PC with Internet connection
+- Micro USB cable
+- Wifi connection for ESP8266 (Use any mobile hotspot or Router)
+- ESP8266 Board
+- Mobile Phone with Blynk App installed
+- IFTT for Google Voice Assistance
+- 9 W Bulb and Relay control
+- Arduino software 
+- Jumper Wires
 
-# Circuit Diagram:
+## Circuit Diagram:
+<img width="1151" height="697" alt="image" src="https://github.com/user-attachments/assets/2332ba3e-d86a-4a5b-b9c0-8dfd21e0cf3f" />
 
 
-# Theory: 
+
+## Theory: 
 
 
 Blynk is an IoT platform for iOS or Android smartphones that is used to control Arduino, Raspberry Pi and NodeMCU via the Internet. This application is used to create a graphical interface or human machine interface (HMI) by compiling and providing the appropriate address on the available widgets.In this experiment we use ESP8266 to control a 220-volt lamp from a web server. But you can also use the same procedure to control fans, lights, AC, or other electrical devices that you want to control remotely.
@@ -25,11 +29,135 @@ Google Assistant and IFTTT work together to let you control services with voice 
 When we apply an active high signal to the signal pin of the relay module from any microcontroller like ESP8266, the relay contact moves from the normally open to the normally closed position. It makes the circuit complete, and the output load turns on.
 
 
-# Program:
+## Program:
+```
+#include<Servo.h>
+#include<LiquidCrystal.h>
+LiquidCrystal lcd(A1,10,9,6,5,3);
+float value;
+int tmp = A0;
+const int pingPin = 7;
+int servoPin = 8;
+
+Servo servo1;
+void setup() 
+{
+  Serial.begin(9600);
+  servo1.attach(servoPin);
+  lcd.begin(16, 2);
+  pinMode(2,INPUT);
+  pinMode(4,OUTPUT);
+  pinMode(11,OUTPUT);
+  //pinMode(10,INPUT);
+  //pinMode(2,OUTPUT);
+  //pinMode(8,OUTPUT);
+  //pinMode(9,output);
+  //pinMode(11,OUTPUT);
+  //pinMode(13,OUTPUT);
+  //pinMode(14,OUTPUT);
+  
+  pinMode(12,OUTPUT);
+  pinMode(13,OUTPUT);
+  pinMode(A0,INPUT);
+  digitalWrite(2,LOW);
+  digitalWrite(11,HIGH);
+  //digitalWrite(5,OUTPUT);
+  digitalWrite(3,OUTPUT);
+  digitalWrite(7,OUTPUT);
+  digitalWrite(11,OUTPUT);
+  digitalWrite(13,OUTPUT);
+  //digitalWrite(A0,OUTPUT);
+}
+
+void loop() 
+{
+  
+  long duration, inches, cm;
+
+  pinMode(pingPin, OUTPUT);
+  digitalWrite(pingPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(pingPin, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(pingPin, LOW);
+
+  
+  pinMode(pingPin, INPUT);
+  duration = pulseIn(pingPin, HIGH);
+
+  
+  inches = microsecondsToInches(duration);
+  cm = microsecondsToCentimeters(duration);
+  
+  servo1.write(0);
+  
+  if(cm < 40)
+  {
+    servo1.write(90);
+    lcd.setCursor(0,1);
+    lcd.print("Door:OPEN");
+    
+  }
+  else
+  {
+    servo1.write(0);
+    lcd.setCursor(0,1);
+    lcd.print("Door:CLOSED");
+    
+  }
+  
+ 
+  int pir = digitalRead(2);
+  
+  if(pir == HIGH)
+  {
+    digitalWrite(4,HIGH);
+    lcd.setCursor(10,0);
+    lcd.print("LED:ON");
+   // delay(500);
+  }
+  else if(pir == LOW)
+     lcd.setCursor(12,0);
+    lcd.print("OFF");
+  {
+    digitalWrite(4,LOW);
+  }
+  
+ value = analogRead(tmp)*0.004882814;
+  value = (value - 0.5) * 100.0;
+  lcd.setCursor(0,0);
+	lcd.print("Tmp:");
+  	lcd.print(value);
+  	delay(1000);
+  	
+  
+  Serial.println("temperature");
+  Serial.println(value);
+  
+  if(value > 20)
+  {
+    digitalWrite(12,HIGH);
+    digitalWrite(13,LOW);
+  }
+  else
+  {
+    digitalWrite(12,LOW);
+    digitalWrite(13,LOW);
+  }
+  lcd.clear();
+}
+
+long microsecondsToInches(long microseconds) {
+  return microseconds / 74 / 2;
+}
+
+long microsecondsToCentimeters(long microseconds) {
+  return microseconds / 29 / 2;
+}
+```
 
 
-
-# Procedure:
+## Procedure:
 •	Make the circuit connection as per the diagram. In the mobile, download and “Blynq IoT” application using Google play store and Install it. Create log in ID and Password.
 •	Connect the IN pin of the Relay module to D1 pin of NodeMCU (ESP8266).
 •	Connect VCC of the Relay of NodeMCU. Connect GND of the Relay to GND of NodeMCU. 
@@ -46,7 +174,19 @@ When we apply an active high signal to the signal pin of the relay module from a
 •	Say "Turn off the ligh to switch it OFF, Say "Turn on the light" to switch it ON.
 
 
-# Output:
+## Output:
 
-# Result:
+<img width="1158" height="717" alt="image" src="https://github.com/user-attachments/assets/bb34d732-d57c-4526-a11a-ab3674b6a250" />
+
+https://github.com/user-attachments/assets/3e087f1a-3f31-4612-bd57-d22a1b2cafa1
+
+
+
+## Result:
+The Home Automation System with IoT successfully enabled remote monitoring and control of home appliances through the internet.
+
+
+
+
+
 
